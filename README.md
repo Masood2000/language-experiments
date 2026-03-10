@@ -2,7 +2,7 @@
   <img src="banner.svg" alt="Language Experiments" />
 </p>
 
-Deepen your understanding of programming languages through experiments.
+AI Agent to deepen your understanding of programming languages through experiments.
 
 Each language has its own folder with standalone experiments that reveal non-obvious, surprising, or unique behaviors — things that only become clear when you actually run the code.
 
