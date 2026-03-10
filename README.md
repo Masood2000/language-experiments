@@ -14,6 +14,16 @@ The better the model, the deeper the experiments and insights.
 
 This project comes with **80 experiments** across 10 languages (8 per language). Each language folder contains runnable experiment scripts and an `INSIGHTS.md` with detailed findings — explore them to learn surprising behaviors.
 
+Each experiment's findings are documented in `INSIGHTS.md` using this structure:
+
+> **What**: In Java, removing the second-to-last element from an ArrayList during for-each iteration does NOT throw `ConcurrentModificationException`.
+>
+> **Expected**: Modifying a list during iteration always throws `ConcurrentModificationException`.
+>
+> **Actual**: No exception is thrown. The loop silently skips the last element — it's never visited. The internal size check passes by coincidence after removal.
+>
+> **Why**: The for-each loop checks `hasNext()` by comparing `cursor != size`. After removing the second-to-last element, `cursor` equals the new `size`, so the loop exits cleanly — hiding a bug instead of crashing.
+
 To add new experiments beyond what's already here, follow the steps below.
 
 ## How to Add New Experiments
@@ -65,18 +75,6 @@ language-experiments/
 
 - **Experiment files** — Each file is standalone and runnable. Named descriptively after the behavior it demonstrates.
 - **INSIGHTS.md** — Documents every experiment's findings in a structured format: What happened, what was expected, what actually happened, and why.
-
-## Insight Format
-
-Each experiment's findings are documented in `INSIGHTS.md` using this structure:
-
-> **What**: In Java, removing the second-to-last element from an ArrayList during for-each iteration does NOT throw `ConcurrentModificationException`.
->
-> **Expected**: Modifying a list during iteration always throws `ConcurrentModificationException`.
->
-> **Actual**: No exception is thrown. The loop silently skips the last element — it's never visited. The internal size check passes by coincidence after removal.
->
-> **Why**: The for-each loop checks `hasNext()` by comparing `cursor != size`. After removing the second-to-last element, `cursor` equals the new `size`, so the loop exits cleanly — hiding a bug instead of crashing.
 
 ## Running Experiments
 
