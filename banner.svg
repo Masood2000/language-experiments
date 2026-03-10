@@ -6,27 +6,30 @@
     </linearGradient>
   </defs>
   <rect width="1200" height="300" fill="url(#bg)" rx="12"/>
-  <text x="600" y="135" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="52" font-weight="700" fill="#e0e0e0">Language Experiments</text>
-  <text x="600" y="185" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="22" fill="#8892b0">Learn by experimenting</text>
-  <g transform="translate(600, 240)" text-anchor="middle" opacity="0.7">
-    <text x="-440" font-family="monospace" font-size="14" fill="#64ffda">C</text>
-    <circle cx="-420" cy="-5" r="2" fill="#64ffda"/>
-    <text x="-400" font-family="monospace" font-size="14" fill="#64ffda">C++</text>
-    <circle cx="-365" cy="-5" r="2" fill="#64ffda"/>
-    <text x="-340" font-family="monospace" font-size="14" fill="#64ffda">Go</text>
-    <circle cx="-310" cy="-5" r="2" fill="#64ffda"/>
-    <text x="-280" font-family="monospace" font-size="14" fill="#64ffda">Java</text>
-    <circle cx="-230" cy="-5" r="2" fill="#64ffda"/>
-    <text x="-195" font-family="monospace" font-size="14" fill="#64ffda">JavaScript</text>
-    <circle cx="-100" cy="-5" r="2" fill="#64ffda"/>
-    <text x="-65" font-family="monospace" font-size="14" fill="#64ffda">Kotlin</text>
-    <circle cx="0" cy="-5" r="2" fill="#64ffda"/>
-    <text x="35" font-family="monospace" font-size="14" fill="#64ffda">Python</text>
-    <circle cx="110" cy="-5" r="2" fill="#64ffda"/>
-    <text x="145" font-family="monospace" font-size="14" fill="#64ffda">Ruby</text>
-    <circle cx="200" cy="-5" r="2" fill="#64ffda"/>
-    <text x="235" font-family="monospace" font-size="14" fill="#64ffda">Rust</text>
-    <circle cx="290" cy="-5" r="2" fill="#64ffda"/>
-    <text x="325" font-family="monospace" font-size="14" fill="#64ffda">Swift</text>
+  <text x="600" y="120" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="52" font-weight="700" fill="#e0e0e0">Language Experiments</text>
+  <text x="600" y="170" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="22" fill="#8892b0">Learn by experimenting</text>
+  <g text-anchor="middle" opacity="0.7">
+    <g transform="translate(600, 220)">
+      <text x="-250" font-family="monospace" font-size="14" fill="#64ffda">C</text>
+      <circle cx="-230" cy="-5" r="2" fill="#64ffda"/>
+      <text x="-205" font-family="monospace" font-size="14" fill="#64ffda">C++</text>
+      <circle cx="-170" cy="-5" r="2" fill="#64ffda"/>
+      <text x="-140" font-family="monospace" font-size="14" fill="#64ffda">Go</text>
+      <circle cx="-110" cy="-5" r="2" fill="#64ffda"/>
+      <text x="-75" font-family="monospace" font-size="14" fill="#64ffda">Java</text>
+      <circle cx="-25" cy="-5" r="2" fill="#64ffda"/>
+      <text x="15" font-family="monospace" font-size="14" fill="#64ffda">JavaScript</text>
+    </g>
+    <g transform="translate(600, 250)">
+      <text x="-200" font-family="monospace" font-size="14" fill="#64ffda">Kotlin</text>
+      <circle cx="-140" cy="-5" r="2" fill="#64ffda"/>
+      <text x="-105" font-family="monospace" font-size="14" fill="#64ffda">Python</text>
+      <circle cx="-40" cy="-5" r="2" fill="#64ffda"/>
+      <text x="-5" font-family="monospace" font-size="14" fill="#64ffda">Ruby</text>
+      <circle cx="45" cy="-5" r="2" fill="#64ffda"/>
+      <text x="80" font-family="monospace" font-size="14" fill="#64ffda">Rust</text>
+      <circle cx="130" cy="-5" r="2" fill="#64ffda"/>
+      <text x="165" font-family="monospace" font-size="14" fill="#64ffda">Swift</text>
+    </g>
   </g>
 </svg>
