@@ -64,6 +64,18 @@ language-experiments/
 - **Experiment files** — Each file is standalone and runnable. Named descriptively after the behavior it demonstrates.
 - **INSIGHTS.md** — Documents every experiment's findings in a structured format: What happened, what was expected, what actually happened, and why.
 
+## Insight Format
+
+Each experiment's findings are documented in `INSIGHTS.md` using this structure:
+
+> **What**: In JavaScript, `[] == ![]` evaluates to `true`.
+>
+> **Expected**: An empty array compared to its negation should be `false`.
+>
+> **Actual**: It's `true`. `![]` coerces to `false`, then `[] == false` triggers type coercion — `[]` becomes `""`, `""` becomes `0`, `false` becomes `0`, and `0 == 0` is `true`.
+>
+> **Why**: JavaScript's `==` operator follows a chain of abstract equality comparisons (ToPrimitive → ToNumber), leading to non-intuitive results. This is why `===` (strict equality) is preferred.
+
 ## Running Experiments
 
 ### Running the Agent
@@ -103,18 +115,6 @@ ruby ruby/<file>.rb
 # Swift
 swiftc swift/<file>.swift -o /tmp/swift_exp && /tmp/swift_exp
 ```
-
-## Insight Format
-
-Each experiment's findings are documented in `INSIGHTS.md` using this structure:
-
-> **What**: In JavaScript, `[] == ![]` evaluates to `true`.
->
-> **Expected**: An empty array compared to its negation should be `false`.
->
-> **Actual**: It's `true`. `![]` coerces to `false`, then `[] == false` triggers type coercion — `[]` becomes `""`, `""` becomes `0`, `false` becomes `0`, and `0 == 0` is `true`.
->
-> **Why**: JavaScript's `==` operator follows a chain of abstract equality comparisons (ToPrimitive → ToNumber), leading to non-intuitive results. This is why `===` (strict equality) is preferred.
 
 ## Contributing
 
