@@ -68,13 +68,13 @@ language-experiments/
 
 Each experiment's findings are documented in `INSIGHTS.md` using this structure:
 
-> **What**: In JavaScript, `[] == ![]` evaluates to `true`.
+> **What**: In Java, removing the second-to-last element from an ArrayList during for-each iteration does NOT throw `ConcurrentModificationException`.
 >
-> **Expected**: An empty array compared to its negation should be `false`.
+> **Expected**: Modifying a list during iteration always throws `ConcurrentModificationException`.
 >
-> **Actual**: It's `true`. `![]` coerces to `false`, then `[] == false` triggers type coercion — `[]` becomes `""`, `""` becomes `0`, `false` becomes `0`, and `0 == 0` is `true`.
+> **Actual**: No exception is thrown. The loop silently skips the last element — it's never visited. The internal size check passes by coincidence after removal.
 >
-> **Why**: JavaScript's `==` operator follows a chain of abstract equality comparisons (ToPrimitive → ToNumber), leading to non-intuitive results. This is why `===` (strict equality) is preferred.
+> **Why**: The for-each loop checks `hasNext()` by comparing `cursor != size`. After removing the second-to-last element, `cursor` equals the new `size`, so the loop exits cleanly — hiding a bug instead of crashing.
 
 ## Running Experiments
 
