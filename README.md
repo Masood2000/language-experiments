@@ -2,7 +2,7 @@
   <img src="banner.svg" alt="Language Experiments" />
 </p>
 
-Learn programming languages by experimenting.
+Deepen your understanding of programming languages through experiments.
 
 Each language has its own folder with standalone experiments that reveal non-obvious, surprising, or unique behaviors — things that only become clear when you actually run the code.
 
