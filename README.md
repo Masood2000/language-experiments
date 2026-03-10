@@ -56,7 +56,11 @@ language-experiments/
 
 ## Running Experiments
 
-Ask Claude Code to run and verify experiments for you, or run them manually:
+### Using Claude Code
+
+Ask Claude Code to run and verify experiments for you.
+
+### Manually
 
 ```bash
 # Python
