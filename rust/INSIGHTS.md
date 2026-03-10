@@ -69,3 +69,27 @@
 **Expected**: Option adds memory overhead. Error handling requires verbose try/catch blocks. You always need to manually check for None/Err.
 **Actual**: `Option<&T>` is the *same size* as `&T` (8 bytes, not 16) due to niche optimization -- the compiler uses the null pointer value to represent None since references can never be null. The `?` operator provides concise early-return on None/Err. Collecting an iterator of `Result<T, E>` into `Result<Vec<T>, E>` automatically short-circuits on the first error. Combinators like `map`, `and_then`, `unwrap_or_else` enable functional chaining without explicit matching.
 **Why**: Niche optimization exploits "impossible" bit patterns. Since `&T` can never be null, the all-zeros pattern is available to represent None. This extends to Box, NonZeroU32, and other types with "niches." The `?` operator desugars to a match that returns early on Err/None, with automatic error type conversion via the From trait. The collect-into-Result trick works because `Result` implements `FromIterator`, which stops at the first Err. This design eliminates null pointer exceptions at compile time while maintaining zero-cost abstractions.
+
+---
+
+## 9. Integer Overflow (`integer_overflow.rs`)
+
+**What**: Demonstrates how Rust handles integer overflow differently in debug vs release mode and provides four explicit arithmetic strategies.
+
+**Expected**: Integer overflow either always wraps (like C) or always throws an exception.
+
+**Actual**: In debug mode, overflow PANICS at runtime. In release mode, it wraps silently (like C). Rust provides four explicit alternatives: wrapping_add (modular arithmetic), saturating_add (clamps to min/max), checked_add (returns Option<T>), and overflowing_add (returns (result, bool)). The `as` cast silently truncates: 256u16 as u8 = 0. Float-to-int casts truncate toward zero; NaN becomes 0; infinity saturates to MAX/MIN.
+
+**Why**: Rust's design philosophy catches bugs in debug builds while allowing maximum performance in release. The four arithmetic methods make overflow handling explicit in the type system. The `as` cast uses C-style truncation for performance, but Rust 1.45+ guarantees saturating behavior for float-to-int casts (previously undefined). The compiler can even catch constant overflow at compile time.
+
+---
+
+## 10. Closure Traits (`closure_traits.rs`)
+
+**What**: Demonstrates how Rust closures automatically implement Fn/FnMut/FnOnce traits based on how they capture variables.
+
+**Expected**: Closures work like in other languages -- they just capture variables by reference.
+
+**Actual**: Rust has three closure traits: Fn (immutable borrow), FnMut (mutable borrow), and FnOnce (ownership/move). The compiler automatically determines which trait a closure implements based on how it uses captures. `move` with Copy types (like i32) copies the value -- the original remains usable. Fn is a subtrait of FnMut, which is a subtrait of FnOnce. Only non-capturing closures can be coerced to function pointers (fn()).
+
+**Why**: Rust's ownership system extends to closures. Each closure is a unique anonymous struct that captures variables. Fn borrows immutably (can call repeatedly, sharable). FnMut borrows mutably (can call repeatedly, exclusive access). FnOnce takes ownership (can only call once). The trait hierarchy Fn <: FnMut <: FnOnce means any Fn closure can be used where FnMut or FnOnce is expected.

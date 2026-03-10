@@ -93,3 +93,27 @@
 **Actual**: Calling a generator function returns an iterator without executing any code — the body only runs when `.next()` is called. The `return` value of a generator is invisible to `for...of`, spread, and destructuring (they stop at `done: true` without exposing the value). `.next(value)` sends a value INTO the generator — the argument becomes what `yield` evaluates to, enabling two-way communication. `.return()` forces the generator to exit but still triggers `finally` blocks. `.throw()` injects an error at the `yield` point, which can be caught inside the generator.
 
 **Why**: Generators implement the iterator protocol with suspend/resume semantics via coroutines. Each `yield` is a suspension point that saves the execution context. The `for...of` protocol calls `.next()` until `done: true` and uses the `value` from non-done results — the final `{value, done: true}` object's value is deliberately excluded. `yield*` delegates the iterator protocol to another iterable, forwarding `.next()`, `.return()`, and `.throw()` calls transparently, and its expression value is the delegated generator's return value.
+
+---
+
+## 9. Automatic Semicolon Insertion (`automatic_semicolon_insertion.js`)
+
+**What**: Explores how JavaScript silently inserts semicolons, causing `return` followed by a newline to return `undefined`, and template literals on new lines merging with previous expressions.
+
+**Expected**: Code on separate lines should behave as separate statements.
+
+**Actual**: `return\n{name: "hello"}` returns `undefined` because ASI inserts a semicolon after `return`. Lines starting with `(` merge with the previous statement. Template literals on new lines get treated as tagged templates (e.g., `tag\n\`hello\`` becomes `tag\`hello\``). ASI does NOT insert before template literals.
+
+**Why**: ECMAScript spec (11.9.1) defines ASI with restricted productions: `return`, `throw`, `break`, `continue`, and `yield` must have their argument on the same line. When a newline follows these keywords, a semicolon is automatically inserted. Lines starting with `(`, `[`, `/`, `+`, `-`, or backtick are treated as continuations of the previous expression.
+
+---
+
+## 10. Property Descriptors & Object.freeze (`property_descriptors_freeze.js`)
+
+**What**: Explores hidden property attributes (writable, enumerable, configurable) and Object.freeze() shallow behavior.
+
+**Expected**: Object.freeze() makes objects fully immutable, and property visibility is straightforward.
+
+**Actual**: Object.freeze() is shallow -- nested objects remain mutable. Non-enumerable properties are hidden from Object.keys(), JSON.stringify(), and spread, but still directly accessible. An empty sealed object is considered frozen. A property with writable:false can still be redefined via Object.defineProperty() if configurable:true. Setting array.length truncates the array permanently.
+
+**Why**: Property descriptors (ES5) add metadata to every property. Object.freeze() only freezes own properties at one level. The distinction between writable and configurable allows nuanced control: writable prevents assignment, configurable prevents deletion and descriptor changes. Arrays use length as a special property that controls element removal.

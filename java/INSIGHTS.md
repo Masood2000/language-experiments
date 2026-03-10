@@ -100,3 +100,27 @@ javac java/FileName.java -d /tmp/java_exp && java -cp /tmp/java_exp FileName
 **Actual**: Java uses a strict three-phase resolution: (1) match without boxing or varargs, (2) match with boxing but no varargs, (3) match with both. This means widening (`int` to `long`) beats autoboxing (`int` to `Integer`), and autoboxing beats varargs (`int` to `int...`). Passing `null` to overloaded varargs methods (`String...` vs `Integer...`) causes a compile-time ambiguity error. An `int[]` argument matches an `int[]` parameter exactly, but individual `int` arguments match `int...` varargs. A single-argument non-varargs `Object` parameter beats `Object...` varargs.
 
 **Why**: JLS 15.12.2 defines the three-phase process to maintain backward compatibility. Phase 1 uses only subtyping (widening), matching pre-Java-5 behavior. Phase 2 adds autoboxing. Phase 3 adds varargs. A method found in an earlier phase always wins over one found in a later phase. For null arguments with multiple applicable varargs methods, neither is more specific than the other, causing ambiguity. The `int[]` vs `int...` distinction exists because varargs is syntactic sugar -- `int...` IS `int[]` at the bytecode level, but the compiler distinguishes them during resolution.
+
+---
+
+## 9. Suppressed Exceptions (`SuppressedExceptions.java`)
+
+**What**: Demonstrates how try-with-resources preserves both primary and close() exceptions via the suppressed mechanism, while plain try-finally silently loses the original exception.
+
+**Expected**: Both try-finally and try-with-resources handle cleanup exceptions the same way.
+
+**Actual**: In plain try-finally, if both the try block and finally block throw exceptions, the try block's exception is LOST -- only the finally exception propagates. Try-with-resources (Java 7+) preserves the try block's exception as primary and attaches close() exceptions as "suppressed" exceptions via getSuppressed(). Multiple resources are closed in reverse declaration order, and each close() exception is suppressed.
+
+**Why**: The JVM can only propagate one exception. Pre-Java 7, finally's exception replaced try's. Try-with-resources generates bytecode that catches close() exceptions and calls addSuppressed() on the primary exception. If no primary exception exists, the close() exception becomes the primary. The Throwable.addSuppressed() API (Java 7) enables this chain.
+
+---
+
+## 10. Mutable HashMap Key (`MutableHashMapKey.java`)
+
+**What**: Shows that mutating an object used as a HashMap key makes the entry unretrievable -- it becomes a "ghost" entry visible only by iteration.
+
+**Expected**: HashMap entries are always retrievable by their key.
+
+**Actual**: After mutating the key's id (which changes its hashCode), get() and containsKey() both return null/false, even though size() still shows 1. The entry is stuck in the wrong hash bucket. Even creating a new key with the original hash value can't find it. Breaking the equals/hashCode contract (equals without hashCode) allows "equal" objects to coexist as separate keys. IdentityHashMap uses == instead of equals(), keeping equal objects separate.
+
+**Why**: HashMap uses hashCode() to determine the bucket at put() time. If the key's hashCode changes after insertion, the entry remains in the old bucket. get() computes the new hashCode, looks in the wrong bucket, and finds nothing. The equals/hashCode contract (JLS) requires that equal objects must have equal hashCodes; violating this breaks all hash-based collections.

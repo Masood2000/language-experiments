@@ -96,6 +96,30 @@
 
 ---
 
+## 9. Comma Operator Tricks (`comma_operator_tricks.c`)
+
+**What**: Demonstrates the comma operator's surprising behaviors: lowest precedence, left-to-right evaluation, and interactions with assignment and ternary.
+
+**Expected**: The comma is just a separator with no special evaluation behavior.
+
+**Actual**: The comma operator evaluates left-to-right, discarding all values except the last: (1,2,3,4,5) = 5. It has LOWER precedence than assignment: `b = 10, 20` assigns 10 to b (not 20). It introduces a sequence point, making `(val = 1, val + 10)` well-defined. Inside array subscripts, `arr[1, 3]` evaluates to arr[3]. In ternary expressions, the comma becomes part of the true branch.
+
+**Why**: The comma operator (C99 6.5.17) has the lowest precedence of any C operator. It evaluates left-to-right with a sequence point between operands. The primary legitimate use is in for-loop headers. The comma in function arguments and declarations is NOT the comma operator -- it's a separator. This distinction catches many programmers off guard.
+
+---
+
+## 10. Compound Literal Lifetime (`compound_literal_lifetime.c`)
+
+**What**: Demonstrates that compound literals in C are mutable lvalues with block-scoped lifetime, unlike string literals.
+
+**Expected**: Compound literals behave like string literals (read-only, possibly shared).
+
+**Actual**: Compound literals are mutable lvalues -- you can take their address and modify their contents. Each compound literal creates a unique object (unlike string literals which may be shared). char[] compound literals are mutable, while string literals are read-only. Compound literals support designated initializers and can be passed directly to functions without declaring variables.
+
+**Why**: C99 (6.5.2.5) introduced compound literals as unnamed objects with automatic storage duration (block scope). Unlike string literals which may reside in read-only memory, compound literals are on the stack and mutable. Each evaluation creates a new object because they have automatic storage. This makes them useful for passing temporary structs to functions without polluting the namespace with variables.
+
+---
+
 *Each experiment file is standalone and compilable with:*
 ```bash
 gcc -std=c17 -Wall -o /tmp/c_exp <file>.c && /tmp/c_exp

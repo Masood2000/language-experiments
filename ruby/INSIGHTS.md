@@ -93,3 +93,27 @@
 **Actual**: `(1..).lazy.map { |n| n**2 }.first(10)` computes only 10 values, then stops. Lazy enumerators use pull-based evaluation: each element is fully processed through the entire chain before the next element is started. In benchmarks, lazy evaluation performs significantly fewer operations than eager evaluation when you only need a subset of results. Custom infinite enumerators (like Fibonacci) can be created with `Enumerator.new` and used with `.next` for coroutine-like external iteration.
 
 **Why**: Eager Enumerable methods (like `map`, `select`) create intermediate arrays at each step. `Lazy` wraps the enumerator in a `Enumerator::Lazy` that defers computation. Each method in the chain returns another lazy enumerator rather than an array. Values are pulled through the pipeline one at a time only when a terminal operation (like `first`, `to_a`, `force`) demands them. This is Ruby's implementation of the same concept as Java Streams, Python generators, or Haskell's default lazy evaluation.
+
+---
+
+## 9. Frozen String Mutation (`frozen_string_mutation.rb`)
+
+**What**: Explores Ruby's string mutability, freeze behavior, deduplication, and the difference between dup and clone.
+
+**Expected**: Strings behave like other languages (immutable), and freeze/dup/clone work uniformly.
+
+**Actual**: Ruby strings are mutable by default (unlike Python/Java). freeze makes strings immutable and enables deduplication -- 'hello'.freeze returns the same object each time. dup creates a mutable copy (unfreezes!), while clone preserves frozen state. String interpolation always creates a new mutable string, even from frozen components. freeze is shallow -- frozen arrays/hashes with nested mutable objects can still have their contents mutated.
+
+**Why**: Ruby chose mutable strings for flexibility (concatenation, in-place modification). freeze sets an internal flag that prevents modification. The VM optimizes frozen string literals by deduplicating them (same object ID). dup copies the object but resets the frozen flag; clone copies everything including frozen state. The frozen_string_literal: true magic comment makes all string literals in a file automatically frozen.
+
+---
+
+## 10. Comparable & Spaceship Operator (`comparable_spaceship.rb`)
+
+**What**: Demonstrates Ruby's <=> spaceship operator and the Comparable mixin that provides 6 comparison methods from a single implementation.
+
+**Expected**: Comparison operators must be individually implemented for each class.
+
+**Actual**: Implementing just <=> and including Comparable gives you <, <=, ==, >=, >, between?, and clamp for free. The <=> operator returns -1, 0, 1 for ordered values, or nil for incomparable types. Returning nil from <=> causes sort to crash with ArgumentError. Comparable's == uses <=> but doesn't override eql?, so == and eql? can disagree. Ranges and min/max/sort all work automatically with any Comparable object.
+
+**Why**: Ruby's Comparable module is a mixin that generates comparison methods by calling <=>. The <=> convention (returning -1/0/1/nil) is used throughout Ruby's standard library. sort calls <=> internally. The nil return for incomparable types follows the principle that not all objects are orderable. eql? is intentionally separate because it's used for Hash key comparison (stricter identity).

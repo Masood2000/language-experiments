@@ -12,7 +12,7 @@ The better the model, the deeper the experiments and insights.
 
 ## What's Included
 
-This project comes with **80 experiments** across 10 languages (8 per language). Each language folder contains runnable experiment scripts and an `INSIGHTS.md` with detailed findings — explore them to learn surprising behaviors.
+This project comes with **100 experiments** across 10 languages (10 per language). Each language folder contains runnable experiment scripts and an `INSIGHTS.md` with detailed findings — explore them to learn surprising behaviors.
 
 Each experiment's findings are documented in `INSIGHTS.md` using this structure:
 

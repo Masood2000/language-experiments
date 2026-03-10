@@ -95,3 +95,27 @@
 **Why**: Go only allows `==` on "comparable" types (no slices, maps, or functions). Empty structs are a special case — the runtime may return the same address (`runtime.zerobase`) for all zero-size allocations. Struct padding follows platform alignment rules: each field must start at an address that is a multiple of its alignment. A `bool` followed by `int64` wastes 7 bytes of padding. Grouping fields by decreasing size minimizes padding waste.
 
 ---
+
+## 9. String & Rune Gotchas (`string_rune_gotchas.go`)
+
+**What**: Demonstrates that Go strings are byte slices, not character arrays -- len() counts bytes, indexing returns bytes, and range iterates runes.
+
+**Expected**: len("Hello, 世界") should return the number of characters (9), and s[7] should return '世'.
+
+**Actual**: len() returns 13 (bytes). s[7] returns 228 (first byte of '世' in UTF-8). range iterates by rune (decoding UTF-8), while index loops iterate by byte. Visually identical strings with different Unicode representations (e.g., 'é' vs 'e'+combining accent) are NOT equal. String-to-[]byte conversion copies the data; modifying the copy doesn't affect the original.
+
+**Why**: Go strings are defined as read-only byte slices (not character arrays). len() returns byte count, not rune count. Use utf8.RuneCountInString() for character count. range auto-decodes UTF-8, but index access does not. rune is just an alias for int32.
+
+---
+
+## 10. Variable Shadowing (`variable_shadowing.go`)
+
+**What**: Demonstrates how Go's := operator silently shadows variables in inner scopes, including named return values and builtins.
+
+**Expected**: := in an inner block would modify the outer variable, and builtins like true/len/nil are reserved.
+
+**Actual**: := in an inner block creates a NEW variable, leaving the outer one unchanged. Multi-return := in inner scopes creates all-new variables even when one name matches an outer variable. Named return values can be shadowed, causing naked return to return zero values instead of expected values. Go lets you shadow builtins -- you can set `true = false` or redefine `len` as a custom function.
+
+**Why**: Go's := declares a new variable in the current scope. In inner blocks, this creates a shadow. The compiler doesn't warn about shadowing (use `go vet -shadow` to detect it). Builtins are predeclared identifiers in the "universe block", not reserved keywords, so they can be redeclared in any scope.
+
+---

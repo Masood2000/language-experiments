@@ -96,4 +96,28 @@
 
 ---
 
+## 9. Lambda Capture Quirks (`lambda_capture_quirks.cpp`)
+
+**What**: Demonstrates surprising behaviors with C++ lambda captures including value snapshots, const-by-default, mutable lambda copies, and the loop variable reference capture gotcha.
+
+**Expected**: Lambda captures work like closures in other languages (simple reference to outer scope).
+
+**Actual**: Value captures take a snapshot at creation time and are const by default -- you need `mutable` to modify them. Each copy of a mutable lambda has independent state. Init captures (C++14) allow moving unique_ptr into lambdas. Capturing loop variable by reference causes all lambdas to see the final value (all return 5). Each lambda expression has a unique type, even with identical bodies.
+
+**Why**: C++ lambdas generate anonymous functor classes. Value captures become const member variables (mutable removes const). Copies of lambdas copy the entire functor object including its state. The loop variable gotcha occurs because all lambdas share a reference to the same stack variable. Unique types per lambda enable optimizations (no virtual dispatch needed) but require std::function for type erasure.
+
+---
+
+## 10. Comma & Evaluation Order (`comma_and_evaluation_order.cpp`)
+
+**What**: Explores the comma operator, overloaded comma, map::operator[] side effects, and operator precedence traps.
+
+**Expected**: Reading from a map is a pure read operation, and operator precedence is intuitive.
+
+**Actual**: map::operator[] silently inserts a default-constructed entry when accessing a non-existent key (reading has a write side effect). Overloading the comma operator can completely change its semantics (keeping all values instead of discarding). Bitwise & has LOWER precedence than == (flags & 1 == 1 is parsed as flags & (1 == 1)). The ternary operator coerces both branches to a common type, so `true ? 1 : 2.5` returns a double even though the int branch was chosen.
+
+**Why**: map::operator[] returns a reference, so it must create the entry if missing. The precedence of & < == comes from C's history where & was originally used for logical AND. C++17 added left-to-right guarantees for a.b, a->b, a[b], <<, >> but function arguments remain unsequenced.
+
+---
+
 *Compile each file with: `g++ -std=c++17 -o /tmp/cpp_exp file.cpp && /tmp/cpp_exp`*

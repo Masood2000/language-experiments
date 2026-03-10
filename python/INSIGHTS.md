@@ -99,3 +99,27 @@
 - `weakref.ref()` creates references that don't increase refcount — useful for caches and breaking cycles.
 
 **Why**: Unlike Java/Go which use tracing GC only, Python's hybrid approach (refcount + cyclic GC) gives deterministic cleanup for most objects (immediate `__del__` when refcount hits 0) while still handling cycles. The generational system is based on the hypothesis that most objects die young.
+
+---
+
+## 9. Tuple Hashability Surprise (`tuple_hashability_surprise.py`)
+
+**What**: Demonstrates that tuples are NOT always hashable despite being "immutable", and the famous `+=` paradox where an operation both succeeds AND raises an error.
+
+**Expected**: Tuples are immutable, so they should always be hashable and their contents should never change.
+
+**Actual**: A tuple containing a list (e.g., `(1, 2, [3, 4])`) raises `TypeError: unhashable type: 'list'` when hashed. You can mutate lists inside tuples via `append()`. Most surprisingly, `t[0] += [5, 6]` on a tuple containing a list both raises `TypeError` AND mutates the list — the list is extended, but the tuple assignment fails.
+
+**Why**: Tuples are immutable in that their references can't be reassigned, but the objects they reference can still be mutable. Hashability requires all elements to be hashable (recursive check). The `+=` paradox occurs because `t[0] += [5, 6]` compiles to: (1) `temp = t[0].__iadd__([5, 6])` which succeeds and mutates the list in-place, then (2) `t[0] = temp` which fails because tuples don't support item assignment. The mutation happens before the assignment error.
+
+---
+
+## 10. Exception Chaining Trap (`exception_chaining_trap.py`)
+
+**What**: Explores Python's exception chaining (`__context__`, `__cause__`, `from None`) and how `return` in `finally` silently swallows exceptions.
+
+**Expected**: Exceptions are straightforward — one exception at a time, and `finally` is just for cleanup.
+
+**Actual**: When an exception is raised while handling another, Python implicitly chains them via `__context__`. Using `raise X from Y` sets `__cause__` for explicit chaining. `from None` suppresses the chain in tracebacks (but `__context__` is still set). Most dangerously, a `return` in `finally` silently swallows any exception from `try` — no traceback, no error, the exception simply vanishes. It also overrides any `return` in `try`.
+
+**Why**: PEP 3134 introduced exception chaining in Python 3. `__context__` is set automatically when raising during exception handling. `__cause__` is set by the `from` clause. `__suppress_context__` controls traceback display. The `return`-in-`finally` behavior follows from the language spec: `finally` always executes, and its control flow (return/break/continue) takes precedence over any pending exception or return value from `try`/`except`.

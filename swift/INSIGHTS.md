@@ -93,3 +93,27 @@
 **Actual**: `👨‍👩‍👧‍👦` has `.count` of 1 despite being composed of 7 Unicode scalars and 25 UTF-8 bytes. The precomposed and decomposed forms of `"é"` are `==` equal. A base character with 8 stacked combining marks still counts as 1 `Character`.
 
 **Why**: Swift's `String` operates at the grapheme cluster level per the Unicode standard. A `Character` in Swift is an **extended grapheme cluster**, not a code point or byte. String comparison uses Unicode canonical equivalence (NFC/NFD normalization), so different byte representations of the same visual character are equal. This makes `.count` O(n) since the runtime must walk the string to find cluster boundaries, which is why Swift forbids integer subscripting on strings.
+
+---
+
+## 9. Mutating & inout Surprises (`mutating_inout_surprises.swift`)
+
+**What**: Demonstrates how inout uses copy-in/copy-out semantics (not pass-by-reference) and how mutating methods can completely replace self.
+
+**Expected**: inout parameters work like pass-by-reference (C++ &), and mutating just allows field modification.
+
+**Actual**: inout uses copy-in/copy-out, which triggers willSet/didSet property observers even when passing to a function (the value is copied back). inout works with computed properties (getter called, value modified, setter called). Swift enforces exclusive access -- you can't pass the same variable as two inout parameters. mutating methods on value types can completely replace self (self = newValue). let makes value types truly immutable -- can't call mutating methods. Closures cannot capture inout parameters.
+
+**Why**: Copy-in/copy-out was chosen over pass-by-reference for safety. It ensures property observers always fire and prevents aliasing bugs. Swift's exclusive access rule (SE-0176) prevents simultaneous reads and writes to the same memory. mutating is syntactic sugar for an implicit inout self parameter, which is why it can replace self entirely. Closures can't capture inout because the parameter's lifetime may end before the closure executes.
+
+---
+
+## 10. Type Casting & Any Traps (`type_casting_any_traps.swift`)
+
+**What**: Demonstrates how Any silently wraps optionals, numeric casting through Any fails, and T.self vs type(of:) diverge.
+
+**Expected**: Any works like a transparent container, and type casting through Any behaves like direct casting.
+
+**Actual**: Assigning an Optional to Any wraps the Optional inside Any -- type(of:) shows Optional<String>. Numeric casts that normally work (Int to Double) FAIL through Any: `(42 as Any) as? Double` returns nil. T.self in a generic function shows the declared type (Any), while type(of:) shows the actual runtime type (Int). Protocol conformance checks work correctly through Any. AnyObject only holds class instances; value types require Any.
+
+**Why**: Any is Swift's top type but uses existential containers that preserve the exact original type. Unlike implicit numeric conversions, as? only performs same-type or subtype casts. T.self is resolved at compile time based on the static type parameter, while type(of:) is a runtime introspection. The distinction between Any and AnyObject reflects Swift's value-type-first design.

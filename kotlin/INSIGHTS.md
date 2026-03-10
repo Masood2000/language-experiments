@@ -129,3 +129,27 @@ Also:
 - Dispatchers control the thread pool: `Default` (CPU), `IO` (blocking), `Main` (UI)
 
 **Why**: Each thread needs ~1MB stack allocated by the OS. Coroutines are just objects on the heap (~few hundred bytes). Suspension is a compiler transformation (state machine), not an OS context switch. This makes them orders of magnitude cheaper than threads for concurrent I/O-heavy workloads.
+
+---
+
+## 9. Nothing Type Tricks (`nothing_type_tricks.kt`)
+
+**What**: Demonstrates Kotlin's Nothing type -- a bottom type that is a subtype of every other type, making throw, TODO(), and emptyList() work in any expression context.
+
+**Expected**: throw is a statement (like Java), and empty collections need explicit type parameters.
+
+**Actual**: throw is an expression of type Nothing, which is a subtype of every type. This means `val x: String = nullableVal ?: throw Exception()` compiles because Nothing <: String. TODO() returns Nothing, so it satisfies any return type. emptyList() returns List<Nothing>, compatible with List<String>, List<Int>, etc. Nothing has zero instances; Nothing? has exactly one value: null. Infinite loops (while(true)) have type Nothing.
+
+**Why**: Nothing is Kotlin's bottom type (the dual of Any, the top type). In type theory, the bottom type is a subtype of all types. Since Nothing has no instances, it can only appear in expressions that never complete normally (throw, infinite loops, process exit). This is more principled than Java's approach where throw is a statement and void is not a real type.
+
+---
+
+## 10. Companion Object Surprises (`companion_object_surprises.kt`)
+
+**What**: Demonstrates that Kotlin companion objects are real singleton objects that can implement interfaces, maintain state, and have their own initialization lifecycle.
+
+**Expected**: Companion objects are just Kotlin's syntax for Java static members.
+
+**Actual**: Companion objects can implement interfaces -- Widget's companion implements Factory<Widget> and can be passed directly as a Factory argument. They have their own init blocks that run once (on first access), before any instance init. They are real singleton objects with identity (Widget.Companion). Named companions (companion object Config) provide clearer access patterns. Mutable state in companions is shared across all instances, persisting like static fields.
+
+**Why**: Unlike Java's static members (which belong to the class, not an object), Kotlin companion objects are actual singleton instances of a generated class (e.g., Widget$Companion). This means they participate in the object system -- they can implement interfaces, be passed as arguments, and have their own initialization. On the JVM, @JvmStatic generates actual static methods for Java interop.
