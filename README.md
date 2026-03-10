@@ -10,6 +10,12 @@ The better the model, the deeper the experiments and insights.
 
 > **Note:** All experiments and insights are LLM-generated. Always verify the explanations and run the experiments yourself.
 
+## What's Included
+
+This project comes with **80 experiments** across 10 languages (8 per language). Each language folder contains runnable experiment scripts and an `INSIGHTS.md` with detailed findings — explore them to learn surprising behaviors.
+
+To add new experiments beyond what's already here, follow the steps below.
+
 ## How It Works
 
 1. Open this project in [Claude Code](https://claude.ai/code).
