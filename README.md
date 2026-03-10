@@ -58,7 +58,7 @@ language-experiments/
 
 You can also ask Claude Code to run and verify all experiments for you.
 
-<details>
+<details open>
 <summary>Or run them manually</summary>
 
 ```bash
