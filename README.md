@@ -8,6 +8,14 @@ Each language has its own folder with standalone experiments that reveal non-obv
 
 The better the model, the deeper the experiments and insights.
 
+## How It Works
+
+1. You ask the agent to experiment with a language (with or without a specific topic).
+2. The agent reads all existing experiments in that language folder to avoid repetition.
+3. It creates a new standalone experiment script that demonstrates a non-obvious behavior.
+4. The agent runs the experiment and verifies the output.
+5. The findings are appended to the language's `INSIGHTS.md` in a structured format.
+
 ## Languages
 
 - [C](c/)
