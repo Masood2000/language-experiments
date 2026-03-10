@@ -25,8 +25,15 @@ This is a language experimentation project. The goal is to explore programming l
 ## Running Experiments
 
 - Python: `python3 experiments/python/<file>.py`
+- Kotlin: `kotlinc experiments/kotlin/<file>.kt -include-runtime -d /tmp/kt_exp.jar && java -jar /tmp/kt_exp.jar`
 - JavaScript: `node experiments/javascript/<file>.js`
 - Other languages: use standard toolchain for that language.
+
+## Kotlin-specific Notes
+
+- Sealed classes, interfaces, data classes, and custom delegates must be top-level (not inside `main()`).
+- Coroutine experiments require `kotlinx-coroutines-core` on the classpath.
+- Nullable types (`Int?`) box to `java.lang.Integer` — this affects `===` identity checks.
 
 ## INSIGHTS.md Format
 
