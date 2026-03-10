@@ -9,9 +9,9 @@ This is a language experimentation project. The goal is to explore programming l
 ## How It Works
 
 1. Check `language.txt` for the current target language.
-2. Create experiments in `experiments/<language>/` — each experiment is a standalone script.
+2. Create experiments in `<language>/` — each experiment is a standalone script.
 3. Each experiment should demonstrate something surprising, non-obvious, or unique to that language.
-4. Write findings to `experiments/<language>/INSIGHTS.md` after running experiments.
+4. Write findings to `<language>/INSIGHTS.md` after running experiments.
 
 ## Rules for Experiments
 
@@ -24,9 +24,9 @@ This is a language experimentation project. The goal is to explore programming l
 
 ## Running Experiments
 
-- Python: `python3 experiments/python/<file>.py`
-- Kotlin: `kotlinc experiments/kotlin/<file>.kt -include-runtime -d /tmp/kt_exp.jar && java -jar /tmp/kt_exp.jar`
-- JavaScript: `node experiments/javascript/<file>.js`
+- Python: `python3 python/<file>.py`
+- Kotlin: `kotlinc kotlin/<file>.kt -include-runtime -d /tmp/kt_exp.jar && java -jar /tmp/kt_exp.jar`
+- JavaScript: `node javascript/<file>.js`
 - Other languages: use standard toolchain for that language.
 
 ## Kotlin-specific Notes
