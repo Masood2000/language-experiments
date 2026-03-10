@@ -1,6 +1,8 @@
-# Language Experiments
+<p align="center">
+  <img src="banner.svg" alt="Language Experiments" />
+</p>
 
-Learn programming languages by experimenting, not by reading books.
+Learn programming languages by experimenting.
 
 Each language has its own folder with standalone experiments that reveal non-obvious, surprising, or unique behaviors — things that only become clear when you actually run the code.
 
