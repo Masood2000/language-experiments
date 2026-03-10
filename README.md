@@ -108,13 +108,13 @@ swiftc swift/<file>.swift -o /tmp/swift_exp && /tmp/swift_exp
 
 Each experiment's findings are documented in `INSIGHTS.md` using this structure:
 
-> **What**: Mutable default arguments are shared across function calls.
+> **What**: The family emoji `👨‍👩‍👧‍👦` is a single `Character` in Swift, but is composed of 7 Unicode scalars and 25 UTF-8 bytes.
 >
-> **Expected**: Each call gets a fresh empty list.
+> **Expected**: The emoji has a length greater than 1.
 >
-> **Actual**: The list accumulates across calls — `['a']` → `['a', 'b']` → `['a', 'b', 'c']`.
+> **Actual**: `.count` returns 1. Swift treats it as one extended grapheme cluster. Also, `"é"` written as `U+00E9` and `"e" + combining accent` are `==` equal despite different bytes.
 >
-> **Why**: Default values are evaluated once at function definition time, not per call.
+> **Why**: Swift's `String` operates at the grapheme cluster level per the Unicode standard. Comparison uses canonical equivalence, so different byte representations of the same visual character are equal. This is why Swift forbids integer subscripting on strings — `.count` is O(n).
 
 ## Contributing
 
